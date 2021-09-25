@@ -64,25 +64,87 @@ def winner(board):
     """
     Returns the winner of the game, if there is one.
     """
-    raise NotImplementedError
+    # Deepcopy the board
+    board_copy = copy.deepcopy(board)
+
+    # Check the lines and columns
+    for direction in range(2):
+        for player in [X, O]:
+            for row in board_copy:
+                if row == [player, player, player]:
+                    return player
+        # Transpose list to check columns
+        board_copy = list(map(list, zip(*board_copy)))
+
+    # Check the diagonals
+    for j in range(2):
+        count_X = 0
+        count_O = 0
+        for i in range(3):
+            if board_copy[i][i] == X:
+                count_X += 1
+            elif board_copy[i][i] == O:
+                count_O += 1
+        
+        if count_X == 3:
+            return X
+        elif count_O == 3:
+            return O
+        
+        # Transpose list to check columns
+        board_copy = list(map(list, zip(*board_copy)))
+
+    return None
 
 
 def terminal(board):
     """
     Returns True if game is over, False otherwise.
     """
-    raise NotImplementedError
+    if winner(board):
+        return True
 
+    # If it's a tie
+    count = 0
+    for row in board:
+        for mark in row:
+            if mark:
+                count += 1 
+
+    if count == 9:
+        return True
+
+    # If the game is not over, return False
+    return False
 
 def utility(board):
     """
     Returns 1 if X has won the game, -1 if O has won, 0 otherwise.
     """
-    raise NotImplementedError
+    if winner(board) == X:
+        return 1
+    elif winner(board) == O:
+        return -1
+    else:
+        return 0
 
 
 def minimax(board):
     """
     Returns the optimal action for the current player on the board.
     """
-    raise NotImplementedError
+    if terminal(board):
+        return None
+
+
+def maxvalue(board):
+    v = -2
+    # If terminal state, evaluate the board
+    if terminal(board):
+        return utility(board)
+
+    #If not a terminal state, find possible actions
+    for action in actions(board):
+        v = max(v, minvalue(result(board, action)))
+
+    
