@@ -128,15 +128,6 @@ def utility(board):
     else:
         return 0
 
-
-def minimax(board):
-    """
-    Returns the optimal action for the current player on the board.
-    """
-    if terminal(board):
-        return None
-
-
 def maxvalue(board):
     v = -2
     # If terminal state, evaluate the board
@@ -146,5 +137,60 @@ def maxvalue(board):
     #If not a terminal state, find possible actions
     for action in actions(board):
         v = max(v, minvalue(result(board, action)))
+        return v
+
+def minvalue(board):
+    v = 2
+    # If terminal state, evaluate the board
+    if terminal(board):
+        return utility(board)
+
+    #If not a terminal state, find possible actions
+    for action in actions(board):
+        v = min(v, maxvalue(result(board, action)))
+        return v
+
+def minimax(board):
+    """
+    Returns the optimal action for the current player on the board.
+    """
+    if terminal(board):
+        return None
+
+    # The maximizing player picks action a in Actions(s) that produces the highest value of Min-Value(Result(s, a)).
+    if player(board) == X:
+        v_max = -2
+        for action in actions(board): 
+            score = maxvalue(result(board, action))
+            if score > v_max:        # if the score is bigger than the best score so far
+                v_max = score        # update best score
+                best_action = action # save the action
+            if score == 1:
+                break
+        return best_action
+
+    # The minimizing player picks action a in Actions(s) that produces the lowest value of Max-Value(Result(s, a)).
+    elif player(board) == O:
+        v_min = 2
+        for action in actions(board): 
+            score = minvalue(result(board, action))
+            if score < v_min:        # if the score is smaller than the best score so far
+                v_min = score        # update best score
+                best_action = action # save the action
+            if score == -1:
+                break
+        return best_action
+
+            
+
+    
+
+
+
+
+
+    
+
+
 
     
