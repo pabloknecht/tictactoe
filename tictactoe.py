@@ -40,11 +40,11 @@ def actions(board):
     Returns set of all possible actions (i, j) available on the board.
     """
     actions = set()
-    for i, row in board:
-        for j, mark in row:
+    for i, row in enumerate(board):
+        for j, mark in enumerate(row):
             if not mark:
+                x = (i, j)
                 actions.add((i, j))
-
     return actions
 
 def result(board, action):
@@ -66,15 +66,20 @@ def winner(board):
     """
     # Deepcopy the board
     board_copy = copy.deepcopy(board)
-
+    
     # Check the lines and columns
     for direction in range(2):
+        print(board_copy)
         for player in [X, O]:
+            print("Player: ", player)
             for row in board_copy:
+                print("     row: ", row)
                 if row == [player, player, player]:
                     return player
         # Transpose list to check columns
         board_copy = list(map(list, zip(*board_copy)))
+    
+    print(board_copy)
 
     # Check the diagonals
     for j in range(2):
@@ -83,16 +88,12 @@ def winner(board):
         for i in range(3):
             if board_copy[i][i] == X:
                 count_X += 1
+                if count_X == 3:
+                    return X
             elif board_copy[i][i] == O:
                 count_O += 1
-        
-        if count_X == 3:
-            return X
-        elif count_O == 3:
-            return O
-        
-        # Transpose list to check columns
-        board_copy = list(map(list, zip(*board_copy)))
+                if count_O == 3:
+                    return O
 
     return None
 
