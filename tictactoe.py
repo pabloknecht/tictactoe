@@ -40,10 +40,12 @@ def actions(board):
     Returns set of all possible actions (i, j) available on the board.
     """
     actions = set()
+
     for i, row in enumerate(board):
         for j, mark in enumerate(row):
             if not mark:
                 actions.add((i, j))
+
     return actions
 
 def result(board, action):
@@ -126,25 +128,39 @@ def utility(board):
 
 def maxvalue(board):
     v = -2
+    move = None
     # If terminal state, evaluate the board
     if terminal(board):
-        return utility(board)
+        return utility(board), None
 
     #If not a terminal state, find possible actions
     for action in actions(board):
-        v = max(v, minvalue(result(board, action)))
-        return v
+        aux_v, aux_action = minvalue(result(board, action))
+        if aux_v > v:
+            v = aux_v
+            move = action
+            if v == 1:
+                return v, move
+
+    return v, move
 
 def minvalue(board):
     v = 2
+    move = None
     # If terminal state, evaluate the board
     if terminal(board):
-        return utility(board)
+        return utility(board), None
 
     #If not a terminal state, find possible actions
     for action in actions(board):
-        v = min(v, maxvalue(result(board, action)))
-        return v
+        aux_v, aux_action = maxvalue(result(board, action))
+        if aux_v < v:
+            v = aux_v
+            move = action
+            if v == -1:
+                return v, move
+
+    return v, move
 
 def minimax(board):
     """
@@ -155,27 +171,12 @@ def minimax(board):
 
     # The maximizing player picks action a in Actions(s) that produces the highest value of Min-Value(Result(s, a)).
     if player(board) == X:
-        v_max = -2
-        for action in actions(board): 
-            score = maxvalue(result(board, action))
-            if score > v_max:        # if the score is bigger than the best score so far
-                v_max = score        # update best score
-                best_action = action # save the action
-            if score == 1:
-                break
-        return best_action
-
-    # The minimizing player picks action a in Actions(s) that produces the lowest value of Max-Value(Result(s, a)).
-    elif player(board) == O:
-        v_min = 2
-        for action in actions(board): 
-            score = minvalue(result(board, action))
-            if score < v_min:        # if the score is smaller than the best score so far
-                v_min = score        # update best score
-                best_action = action # save the action
-            if score == -1:
-                break
-        return best_action
+        v, action = maxvalue(board)
+        return action
+    else:
+        v, action = minvalue(board)
+        return action
+        
 
             
 
