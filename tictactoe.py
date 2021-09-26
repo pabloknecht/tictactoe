@@ -24,10 +24,10 @@ def player(board):
     Returns player who has the next turn on a board.
     """
     count = 0
-    for row in board:
-        for mark in row:
+    for i, row in enumerate(board):
+        for j, mark in enumerate(row):
             if mark:
-                count =+ 1
+                count = count + 1
 
     if count % 2 == 0:
         return X
@@ -43,7 +43,6 @@ def actions(board):
     for i, row in enumerate(board):
         for j, mark in enumerate(row):
             if not mark:
-                x = (i, j)
                 actions.add((i, j))
     return actions
 
@@ -69,17 +68,12 @@ def winner(board):
     
     # Check the lines and columns
     for direction in range(2):
-        print(board_copy)
         for player in [X, O]:
-            print("Player: ", player)
             for row in board_copy:
-                print("     row: ", row)
                 if row == [player, player, player]:
                     return player
         # Transpose list to check columns
         board_copy = list(map(list, zip(*board_copy)))
-    
-    print(board_copy)
 
     # Check the diagonals
     for j in range(2):
@@ -94,6 +88,7 @@ def winner(board):
                 count_O += 1
                 if count_O == 3:
                     return O
+        board_copy.reverse()
 
     return None
 
